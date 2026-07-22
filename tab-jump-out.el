@@ -99,6 +99,8 @@
 ;; that is set in the before hook if the mode was on.  Only re-enable it in the
 ;; exit hook of the local variable is set.
 
+(require 'cl-lib)
+
 (defgroup tab-jump-out nil
   "Custom group for `tab-jump-out-mode'."
   :group 'editing
@@ -110,6 +112,16 @@
   ;; so we don't have the word "jump" in there twice which sounds too busy.
   "The characters that tab will move past to jump out.")
 
+(defcustom tab-jump-out-disable-modes '(completion-preview-active-mode)
+  "A list of minor modes that disable `tab-jump-out'.
+When any of these modes is active in the current buffer, pressing
+TAB will not jump out of a delimiter, allowing the other mode to
+handle the key instead.  This is useful for modes such as
+`completion-preview-active-mode' that also bind TAB and should
+take precedence."
+  :type '(repeat symbol)
+  :group 'tab-jump-out)
+
 ;;;###autoload
 (defun tab-jump-out ()
   "Jump over the delimiter at point."
@@ -120,6 +132,17 @@
   "Return non-nil if point is on a delimiter character."
   (and (char-after)
        (member (char-to-string (char-after)) tab-jump-out-delimiters)))
+
+(defun tab-jump-out--disable-modes-enabled-p ()
+  "Return non-nil if a mode in `tab-jump-out-disable-modes' is active."
+  (cl-some (lambda (mode)
+             (and (boundp mode) (symbol-value mode)))
+           tab-jump-out-disable-modes))
+
+(defun tab-jump-out--enabled-p ()
+  "Return non-nil if tab-jump-out should act at point."
+  (and (tab-jump-out--on-delimiter-p)
+       (not (tab-jump-out--disable-modes-enabled-p))))
 
 (defvar tab-jump-out-mode-map
   (let ((map (make-sparse-keymap)))
