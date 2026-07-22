@@ -1,4 +1,4 @@
-;;; tab-jump-out.el --- Use tab to jump out of delimiter pairs  -*- lexical-binding: true -*-
+;;; tab-jump-out.el --- Use tab to jump out of delimiter pairs  -*- lexical-binding: t -*-
 ;;
 ;; Copyright (C) 2015 Zhang Kai Yu
 ;; Copyright (C) 2023 Michael Kleehammer
