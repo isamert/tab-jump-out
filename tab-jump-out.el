@@ -149,11 +149,11 @@ take precedence."
     ;; The filter ensures the key binding is only enabled when the cursor is on
     ;; one of the tab-jump-out-delimiters.  If you bind this to a different key,
     ;; be sure to copy the filter.
-    (define-key map [tab]
+    (define-key map (kbd "TAB")
       `(menu-item "" tab-jump-out
-        :filter ,(lambda (cmd)
-                   (when (tab-jump-out--on-delimiter-p)
-                     cmd))))
+                  :filter ,(lambda (cmd)
+                             (when (tab-jump-out--enabled-p)
+                               cmd))))
     map)
   "Keymap for `tab-jump-out-mode'.")
 
